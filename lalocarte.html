@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LaLoCarte — La plateforme vivante du territoire local</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black: #0E0E0E;
+  --white: #F7F5F0;
+  --red: #FF3B00;
+  --green: #2A7A4B;
+  --border: 3px solid #0E0E0E;
+  --border-thin: 1.5px solid #0E0E0E;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Manrope', sans-serif;
+  background: var(--white);
+  color: var(--black);
+  cursor: none;
+  overflow-x: hidden;
+}
+
+/* CUSTOM CURSOR */
+.cursor {
+  position: fixed;
+  width: 16px; height: 16px;
+  background: var(--black);
+  border: none;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: transform 0.08s ease, width 0.2s ease, height 0.2s ease, background 0.2s ease;
+}
+.cursor.hover {
+  width: 48px; height: 48px;
+  background: var(--red);
+}
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  background: var(--black);
+  border-bottom: var(--border);
+  display: flex; align-items: stretch;
+  z-index: 100;
+  height: 56px;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 20px;
+  border-right: var(--border);
+  text-decoration: none;
+}
+.nav-logo-name {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 17px; color: #fff;
+  letter-spacing: -0.01em;
+}
+.nav-links {
+  display: flex; align-items: stretch;
+  margin-left: auto;
+}
+.nav-link {
+  display: flex; align-items: center;
+  padding: 0 18px;
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: #666;
+  text-decoration: none;
+  border-left: var(--border);
+  transition: color 0.15s, background 0.15s;
+}
+.nav-link:hover { color: #fff; background: #1a1a1a; }
+.nav-cta {
+  display: flex; align-items: center;
+  padding: 0 22px;
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 11px; letter-spacing: 0.08em;
+  color: #fff;
+  background: var(--red);
+  border-left: var(--border);
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.nav-cta:hover { background: #e03000; }
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  padding-top: 56px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: var(--border);
+}
+.hero-left {
+  padding: 80px 60px;
+  border-right: var(--border);
+  display: flex; flex-direction: column;
+  justify-content: center;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: var(--border);
+  padding: 6px 14px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--red);
+  letter-spacing: 0.1em; text-transform: uppercase;
+  margin-bottom: 36px;
+  animation: fadeUp 0.6s ease both;
+}
+.hero-eyebrow-dot { width: 7px; height: 7px; background: var(--red); animation: blink 1.4s ease infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+.hero-title {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  color: var(--black);
+  margin-bottom: 36px;
+  animation: fadeUp 0.6s 0.1s ease both;
+}
+.hero-title .red { color: var(--red); }
+.hero-title .stroke {
+  -webkit-text-stroke: 3px var(--black);
+  color: transparent;
+}
+
+.hero-desc {
+  font-size: 16px; font-weight: 400;
+  line-height: 1.75; color: #555;
+  max-width: 440px;
+  margin-bottom: 48px;
+  animation: fadeUp 0.6s 0.2s ease both;
+}
+
+.hero-actions {
+  display: flex; gap: 0;
+  animation: fadeUp 0.6s 0.3s ease both;
+}
+.btn-primary {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--black); color: #fff;
+  border: var(--border);
+  padding: 16px 28px;
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 12px; letter-spacing: 0.08em;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.btn-primary:hover { background: #222; }
+.btn-secondary {
+  display: flex; align-items: center; gap: 10px;
+  background: #fff; color: var(--black);
+  border: var(--border); border-left: none;
+  padding: 16px 28px;
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 12px; letter-spacing: 0.08em;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.btn-secondary:hover { background: #eee; }
+
+.hero-stats {
+  display: flex; margin-top: 60px;
+  border-top: var(--border);
+  animation: fadeUp 0.6s 0.4s ease both;
+}
+.hero-stat { flex: 1; padding: 20px 0; border-right: var(--border-thin); }
+.hero-stat:last-child { border-right: none; }
+.hero-stat-n {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 2.2rem; color: var(--black); line-height: 1;
+}
+.hero-stat-n .r { color: var(--red); }
+.hero-stat-l {
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: #999; margin-top: 5px;
+}
+
+/* HERO RIGHT — live feed preview */
+.hero-right {
+  background: var(--black);
+  padding: 40px;
+  display: flex; flex-direction: column;
+  gap: 0;
+  position: relative;
+  overflow: hidden;
+  animation: fadeIn 0.8s 0.3s ease both;
+}
+.feed-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 20px;
+}
+.feed-title {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 11px; color: #fff;
+  letter-spacing: 0.12em; text-transform: uppercase;
+}
+.feed-live {
+  display: flex; align-items: center; gap: 6px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--red);
+  letter-spacing: 0.08em;
+}
+.live-dot { width: 6px; height: 6px; background: var(--red); animation: blink 1s infinite; }
+
+.feed-item {
+  border: 2.5px solid #222;
+  background: #111;
+  display: flex; align-items: stretch;
+  margin-bottom: 8px;
+  transition: border-color 0.2s;
+  animation: slideIn 0.4s ease both;
+}
+.feed-item:hover { border-color: #444; }
+.feed-item-stripe { width: 6px; flex-shrink: 0; }
+.feed-item-body { padding: 10px 12px; flex: 1; }
+.feed-item-tag {
+  display: inline-block;
+  border: 1.5px solid #333;
+  font-size: 8px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 2px 6px; color: #888;
+  margin-bottom: 5px;
+}
+.feed-item-name {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 12px; color: #fff; margin-bottom: 3px;
+}
+.feed-item-meta { font-size: 10px; color: #555; }
+.feed-item-time {
+  padding: 0 12px;
+  display: flex; align-items: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; color: #444;
+  flex-shrink: 0;
+}
+.feed-item-notif {
+  width: 34px; border-left: 2px solid #222;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.map-preview {
+  border: 2.5px solid #222;
+  background: #161B12;
+  height: 160px;
+  position: relative; overflow: hidden;
+  margin-top: 8px;
+}
+.map-grid-svg { position: absolute; inset: 0; }
+
+@keyframes fadeUp { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: none; } }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@keyframes slideIn { from { opacity:0; transform: translateX(10px); } to { opacity:1; transform: none; } }
+
+/* MARQUEE */
+.marquee-bar {
+  background: var(--red);
+  border-top: var(--border);
+  border-bottom: var(--border);
+  overflow: hidden;
+  height: 48px;
+  display: flex; align-items: center;
+}
+.marquee-track {
+  display: flex; align-items: center; gap: 0;
+  white-space: nowrap;
+  animation: marquee 22s linear infinite;
+}
+.marquee-item {
+  display: flex; align-items: center; gap: 16px;
+  padding: 0 32px;
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 13px; color: #fff;
+  letter-spacing: 0.04em;
+  border-right: 2px solid #e03000;
+  height: 48px;
+}
+.marquee-sep { width: 8px; height: 8px; background: #fff; opacity: 0.4; flex-shrink: 0; }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* SECTIONS */
+section { border-bottom: var(--border); }
+
+.section-label {
+  display: flex; align-items: center;
+  padding: 14px 40px;
+  border-bottom: var(--border);
+  gap: 12px;
+}
+.section-label-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; color: var(--red);
+}
+.section-label-txt {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase; color: #999;
+}
+
+/* FEATURES GRID */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+.feature-cell {
+  padding: 48px 40px;
+  border-right: var(--border);
+  position: relative;
+  transition: background 0.2s;
+}
+.feature-cell:last-child { border-right: none; }
+.feature-cell:hover { background: #f0ede7; }
+.feature-num {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 3rem; color: #e8e5df;
+  line-height: 1; margin-bottom: 20px;
+  transition: color 0.2s;
+}
+.feature-cell:hover .feature-num { color: var(--red); }
+.feature-icon {
+  width: 44px; height: 44px;
+  border: var(--border);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 18px;
+  background: #fff;
+}
+.feature-title {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 1.1rem; color: var(--black);
+  margin-bottom: 12px; line-height: 1.2;
+}
+.feature-desc { font-size: 13px; color: #666; line-height: 1.7; }
+
+/* WHO SECTION */
+.who-grid { display: grid; grid-template-columns: 1fr 1fr; }
+.who-col { border-right: var(--border); }
+.who-col:last-child { border-right: none; }
+.who-header {
+  padding: 32px 40px;
+  border-bottom: var(--border);
+  display: flex; align-items: center; gap: 14px;
+}
+.who-badge {
+  border: var(--border);
+  padding: 6px 14px;
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.who-badge.dark { background: var(--black); color: #fff; }
+.who-badge.red { background: var(--red); color: #fff; border-color: var(--red); }
+.who-title {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 1.3rem; color: var(--black);
+}
+.who-list { padding: 32px 40px; display: flex; flex-direction: column; gap: 0; }
+.who-item {
+  display: flex; align-items: flex-start; gap: 16px;
+  padding: 20px 0;
+  border-bottom: var(--border-thin);
+}
+.who-item:last-child { border-bottom: none; }
+.who-item-arrow {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 14px; color: var(--red);
+  flex-shrink: 0; margin-top: 2px;
+}
+.who-item-text { font-size: 14px; color: #444; line-height: 1.6; }
+.who-item-text strong { color: var(--black); font-weight: 600; }
+
+/* NOTIFICATION DEMO */
+.notif-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.notif-left {
+  padding: 80px 60px;
+  border-right: var(--border);
+}
+.notif-right {
+  background: var(--black);
+  padding: 60px 50px;
+  display: flex; flex-direction: column;
+  justify-content: center;
+}
+.section-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--red);
+  letter-spacing: 0.12em; text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.section-title {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.0;
+  letter-spacing: -0.02em;
+  color: var(--black);
+  margin-bottom: 24px;
+}
+.section-desc { font-size: 15px; color: #666; line-height: 1.75; max-width: 400px; }
+
+.notif-card {
+  border: 2.5px solid #222;
+  background: #111;
+  display: flex; align-items: stretch;
+  margin-bottom: 10px;
+  position: relative;
+  overflow: hidden;
+}
+.notif-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; bottom: 0;
+  width: 5px;
+}
+.notif-card.red::before { background: var(--red); }
+.notif-card.green::before { background: var(--green); }
+.notif-card.white::before { background: #fff; }
+.notif-inner { padding: 14px 14px 14px 22px; flex: 1; }
+.notif-title {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 12px; color: #fff; margin-bottom: 4px;
+}
+.notif-sub { font-size: 11px; color: #666; }
+.notif-t {
+  padding: 0 14px;
+  display: flex; align-items: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; color: #444;
+  flex-shrink: 0;
+}
+
+/* OPEN SOURCE */
+.os-section {
+  background: var(--black);
+  padding: 100px 60px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+}
+.os-title {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  color: #fff;
+}
+.os-title .r { color: var(--red); }
+.os-desc { font-size: 15px; color: #666; line-height: 1.75; margin-top: 24px; }
+.os-items { display: flex; flex-direction: column; gap: 0; border: 2.5px solid #1e1e1e; margin-top: 40px; }
+.os-item {
+  display: flex; align-items: center;
+  padding: 16px 20px; gap: 14px;
+  border-bottom: 1.5px solid #1e1e1e;
+}
+.os-item:last-child { border-bottom: none; }
+.os-item-arrow { color: var(--red); font-weight: 700; font-size: 13px; flex-shrink: 0; }
+.os-item-text { font-size: 13px; color: #aaa; }
+.os-right { display: flex; flex-direction: column; justify-content: center; }
+.code-block {
+  background: #0a0a0a;
+  border: 2px solid #1e1e1e;
+  padding: 28px;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  line-height: 1.9;
+  color: #666;
+}
+.code-block .c-green { color: #2ECC71; }
+.code-block .c-red { color: var(--red); }
+.code-block .c-white { color: #ccc; }
+.code-block .c-gray { color: #555; }
+.code-block .c-yellow { color: #F1C40F; }
+
+/* ROADMAP */
+.roadmap-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+.roadmap-cell {
+  padding: 40px 32px;
+  border-right: var(--border);
+  position: relative;
+}
+.roadmap-cell:last-child { border-right: none; }
+.roadmap-v {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 2.5rem; color: #e8e5df;
+  line-height: 1; margin-bottom: 6px;
+}
+.roadmap-v.active { color: var(--black); }
+.roadmap-tag {
+  display: inline-block;
+  border: var(--border-thin);
+  padding: 3px 10px;
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.roadmap-tag.active { background: var(--black); color: #fff; border-color: var(--black); }
+.roadmap-items { display: flex; flex-direction: column; gap: 10px; }
+.roadmap-item {
+  display: flex; align-items: flex-start; gap: 8px;
+  font-size: 12px; color: #888; line-height: 1.5;
+}
+.roadmap-item.done { color: #444; }
+.roadmap-item::before {
+  content: '□';
+  font-size: 10px; flex-shrink: 0;
+  margin-top: 2px; color: #ccc;
+}
+.roadmap-item.done::before { content: '■'; color: var(--black); }
+.roadmap-item.active-item { color: var(--black); font-weight: 600; }
+.roadmap-item.active-item::before { content: '▶'; color: var(--red); }
+
+/* CTA */
+.cta-section {
+  background: var(--red);
+  padding: 100px 60px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 60px;
+}
+.cta-title {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  color: #fff;
+}
+.cta-sub { font-size: 16px; color: #ffffff99; margin-top: 16px; line-height: 1.6; }
+.cta-actions { display: flex; flex-direction: column; gap: 0; flex-shrink: 0; }
+.cta-btn-main {
+  background: #fff; color: var(--black);
+  border: 3px solid #fff;
+  padding: 18px 32px;
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 13px; letter-spacing: 0.08em;
+  text-decoration: none;
+  display: flex; align-items: center; gap: 10px;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.cta-btn-main:hover { background: #f0ede7; }
+.cta-btn-sec {
+  background: transparent; color: #fff;
+  border: 3px solid #fff; border-top: none;
+  padding: 16px 32px;
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+  text-decoration: none;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: background 0.15s;
+}
+.cta-btn-sec:hover { background: #e03000; }
+
+/* FOOTER */
+footer {
+  background: var(--black);
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  border-top: var(--border);
+}
+.footer-col { padding: 48px 40px; border-right: var(--border); }
+.footer-col:last-child { border-right: none; }
+.footer-logo {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 1.4rem; color: #fff;
+  letter-spacing: -0.01em;
+  margin-bottom: 12px;
+}
+.footer-tagline { font-size: 12px; color: #555; line-height: 1.6; }
+.footer-label {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: #444; margin-bottom: 20px;
+}
+.footer-links { display: flex; flex-direction: column; gap: 10px; }
+.footer-link {
+  font-size: 13px; color: #666;
+  text-decoration: none;
+  display: flex; align-items: center; gap: 8px;
+  transition: color 0.15s;
+}
+.footer-link:hover { color: #fff; }
+.footer-link::before { content: '→'; color: var(--red); font-size: 11px; }
+.footer-bottom {
+  background: #080808;
+  border-top: 2px solid #1a1a1a;
+  padding: 16px 40px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.footer-copy {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: #333;
+  letter-spacing: 0.06em;
+}
+.footer-licence {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: #333;
+  letter-spacing: 0.06em;
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">
+    <svg width="22" height="27" viewBox="0 0 24 30" fill="none">
+      <path d="M12 2C7 2 3 6 3 11C3 18 12 28 12 28C12 28 21 18 21 11C21 6 17 2 12 2Z" fill="#fff"/>
+      <circle cx="12" cy="10.5" r="3.5" fill="#0E0E0E"/>
+      <path d="M9.5 13.5Q12 16 14.5 13.5" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <span class="nav-logo-name">LaLoCarte</span>
+  </a>
+  <div class="nav-links">
+    <a class="nav-link" href="#fonctionnalites">Fonctionnalités</a>
+    <a class="nav-link" href="#qui">Pour qui</a>
+    <a class="nav-link" href="#opensource">Open Source</a>
+    <a class="nav-link" href="#roadmap">Roadmap</a>
+    <a class="nav-cta" href="https://github.com/lalocarte/lalocarte">GitHub →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">
+      <div class="hero-eyebrow-dot"></div>
+      Gratuit · Open Source · Communautaire
+    </div>
+    <h1 class="hero-title">
+      La vie<br>
+      locale,<br>
+      <span class="stroke">en</span> <span class="red">direct.</span>
+    </h1>
+    <p class="hero-desc">
+      Des œufs frais de la ferme d'à côté au concert du village du weekend — LaLoCarte connecte producteurs, habitants et événements locaux en un seul fil vivant.
+    </p>
+    <div class="hero-actions">
+      <a class="btn-primary" href="#fonctionnalites">
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M10 2C7 2 3 6 3 11C3 18 12 28 12 28C12 28 21 18 21 11C21 6 17 2 12 2Z" fill="#fff"/><circle cx="10" cy="9.5" r="3" fill="#0E0E0E"/><path d="M7.5 12Q10 14 12.5 12" fill="none" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/></svg>
+        Découvrir
+      </a>
+      <a class="btn-secondary" href="https://github.com/lalocarte/lalocarte">
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><path d="M10 2C6.7 2 4 4.7 4 8c0 2.7 1.7 4.9 4.2 5.7-.1-.7 0-1.4 0-1.4s-.2 0-.5-.1C6.3 11.9 5.7 10.5 5.6 10c-.1-.4-.4-1.5-1.1-2.1 0 0-.4-.3 0-.3.9.1 1.4 1 1.4 1 .8 1.4 2.1 1 2.6.8.1-.6.3-1 .6-1.2-2-.2-4.1-1-4.1-4.4 0-1 .3-1.8.9-2.4-.1-.2-.4-1.1.1-2.3 0 0 .7-.2 2.4.9.7-.2 1.5-.3 2.2-.3.7 0 1.5.1 2.2.3 1.7-1.1 2.4-.9 2.4-.9.5 1.2.2 2.1.1 2.3.6.6.9 1.4.9 2.4 0 3.4-2.1 4.2-4.1 4.4.3.3.6.8.6 1.6v2.4c0 .2.2.5.6.4C14.3 12.9 16 10.7 16 8c0-3.3-2.7-6-6-6z" fill="#0E0E0E"/></svg>
+        Voir sur GitHub
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat" style="padding-right:24px;">
+        <div class="hero-stat-n"><span class="r">36k</span></div>
+        <div class="hero-stat-l">Communes en France</div>
+      </div>
+      <div class="hero-stat" style="padding:0 24px;">
+        <div class="hero-stat-n">0</div>
+        <div class="hero-stat-l">App leader locale</div>
+      </div>
+      <div class="hero-stat" style="padding-left:24px;">
+        <div class="hero-stat-n"><span class="r">∞</span></div>
+        <div class="hero-stat-l">Producteurs à connecter</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="feed-header">
+      <span class="feed-title">Feed local — Autour de moi</span>
+      <span class="feed-live"><span class="live-dot"></span> Live</span>
+    </div>
+
+    <div class="feed-item" style="animation-delay:0.5s">
+      <div class="feed-item-stripe" style="background:#FF3B00;"></div>
+      <div class="feed-item-body">
+        <div class="feed-item-tag" style="border-color:#FF3B00;color:#FF3B00;">Oeufs frais</div>
+        <div class="feed-item-name">Ferme Bonnet — 2 douzaines dispo</div>
+        <div class="feed-item-meta">1.2 km · Marie-Claire · À la ferme</div>
+      </div>
+      <div class="feed-item-time">8 min</div>
+      <div class="feed-item-notif" style="background:#FF3B00;border-left:2px solid #FF3B00;">
+        <svg width="12" height="12" viewBox="0 0 20 20" fill="none"><path d="M10 2C7 2 5 4 5 7v4l-2 3h14l-2-3V7C15 4 13 2 10 2z" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+
+    <div class="feed-item" style="animation-delay:0.7s">
+      <div class="feed-item-stripe" style="background:#2A7A4B;"></div>
+      <div class="feed-item-body">
+        <div class="feed-item-tag" style="border-color:#2A7A4B;color:#2A7A4B;">Panier légumes</div>
+        <div class="feed-item-name">GAEC Les Coteaux — Semaine 24</div>
+        <div class="feed-item-meta">2.8 km · Retrait vendredi · 12 dispo</div>
+      </div>
+      <div class="feed-item-time">1h</div>
+      <div class="feed-item-notif">
+        <svg width="12" height="12" viewBox="0 0 20 20" fill="none"><path d="M10 2C7 2 5 4 5 7v4l-2 3h14l-2-3V7C15 4 13 2 10 2z" stroke="#444" stroke-width="2" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+
+    <div class="feed-item" style="animation-delay:0.9s">
+      <div class="feed-item-stripe" style="background:#fff;"></div>
+      <div class="feed-item-body">
+        <div class="feed-item-tag">Fête de village</div>
+        <div class="feed-item-name">Saint-Jean — Place du village · 21 juin</div>
+        <div class="feed-item-meta">0.6 km · Entrée libre · 20h</div>
+      </div>
+      <div class="feed-item-time">3h</div>
+      <div class="feed-item-notif">
+        <svg width="12" height="12" viewBox="0 0 20 20" fill="none"><path d="M10 4 L10 16 M4 10 L16 10" stroke="#444" stroke-width="2.5" stroke-linecap="square"/></svg>
+      </div>
+    </div>
+
+    <div class="feed-item" style="animation-delay:1.1s">
+      <div class="feed-item-stripe" style="background:#FF3B00;"></div>
+      <div class="feed-item-body">
+        <div class="feed-item-tag" style="border-color:#FF3B00;color:#FF3B00;">Miel</div>
+        <div class="feed-item-name">Rucher du Moulin — 8 pots restants</div>
+        <div class="feed-item-meta">4.1 km · Sur place ou livraison</div>
+      </div>
+      <div class="feed-item-time">Hier</div>
+      <div class="feed-item-notif">
+        <svg width="12" height="12" viewBox="0 0 20 20" fill="none"><path d="M10 2C7 2 5 4 5 7v4l-2 3h14l-2-3V7C15 4 13 2 10 2z" stroke="#444" stroke-width="2" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+
+    <div class="map-preview">
+      <svg class="map-grid-svg" width="100%" height="100%">
+        <defs>
+          <pattern id="mapgrid" width="30" height="30" patternUnits="userSpaceOnUse">
+            <path d="M30 0L0 0 0 30" fill="none" stroke="#1a2010" stroke-width="0.5"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#mapgrid)"/>
+        <rect x="0" y="60" width="120" height="14" fill="#1E2A18" stroke="#283820" stroke-width="0.5"/>
+        <rect x="200" y="40" width="200" height="12" fill="#1E2A18" stroke="#283820" stroke-width="0.5"/>
+        <rect x="40" y="85" width="90" height="70" fill="#192213" stroke="#283820" stroke-width="0.5"/>
+        <rect x="250" y="70" width="120" height="80" fill="#192213" stroke="#283820" stroke-width="0.5"/>
+      </svg>
+      <!-- pins -->
+      <svg style="position:absolute;top:30px;left:180px" width="20" height="26" viewBox="0 0 24 30" fill="none"><path d="M12 2C7 2 3 6 3 11C3 18 12 28 12 28C12 28 21 18 21 11C21 6 17 2 12 2Z" fill="#FF3B00" stroke="#FF3B00" stroke-width="1"/><circle cx="12" cy="10.5" r="3.5" fill="#fff"/><path d="M9.5 13.5Q12 16 14.5 13.5" fill="none" stroke="#FF3B00" stroke-width="1.2" stroke-linecap="round"/></svg>
+      <svg style="position:absolute;top:55px;left:70px" width="17" height="21" viewBox="0 0 24 30" fill="none"><path d="M12 2C7 2 3 6 3 11C3 18 12 28 12 28C12 28 21 18 21 11C21 6 17 2 12 2Z" fill="#fff"/><circle cx="12" cy="10.5" r="3" fill="#0E0E0E"/></svg>
+      <svg style="position:absolute;top:80px;left:300px" width="17" height="21" viewBox="0 0 24 30" fill="none"><path d="M12 2C7 2 3 6 3 11C3 18 12 28 12 28C12 28 21 18 21 11C21 6 17 2 12 2Z" fill="#2A7A4B"/><circle cx="12" cy="10.5" r="3" fill="#fff"/></svg>
+      <svg style="position:absolute;top:100px;left:150px" width="17" height="21" viewBox="0 0 24 30" fill="none"><path d="M12 2C7 2 3 6 3 11C3 18 12 28 12 28C12 28 21 18 21 11C21 6 17 2 12 2Z" fill="#fff"/><circle cx="12" cy="10.5" r="3" fill="#0E0E0E"/></svg>
+      <div style="position:absolute;bottom:10px;left:10px;background:#0a0a0a;border:1.5px solid #1e1e1e;padding:5px 10px;font-family:'DM Mono',monospace;font-size:9px;color:#555;letter-spacing:0.06em;">AUTOUR DE MOI · 5 KM</div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-bar">
+  <div class="marquee-track">
+    <div class="marquee-item"><span class="marquee-sep"></span> Oeufs frais disponibles</div>
+    <div class="marquee-item"><span class="marquee-sep"></span> Fête de village · 21 juin</div>
+    <div class="marquee-item"><span class="marquee-sep"></span> Panier légumes semaine 24</div>
+    <div class="marquee-item"><span class="marquee-sep"></span> Marché fermier · samedi</div>
+    <div class="marquee-item"><span class="marquee-sep"></span> Miel de printemps · 8 pots</div>
+    <div class="marquee-item"><span class="marquee-sep"></span> Atelier confiture · vendredi</div>
+    <div class="marquee-item"><span class="marquee-sep"></span> Fromages de chèvre · jeudi</div>
+    <div class="marquee-item"><span class="marquee-sep"></span> Concert jazz · parc · 20h</div>
+    <!-- repeat -->
+    <div class="marquee-item"><span class="marquee-sep"></span> Oeufs frais disponibles</div>
+    <div class="marquee-item"><span class="marquee-sep"></span> Fête de village · 21 juin</div>
+    <div class="marquee-item"><span class="marquee-sep"></span> Panier légumes semaine 24</div>
+    <div class="marquee-item"><span class="marquee-sep"></span> Marché fermier · samedi</div>
+    <div class="marquee-item"><span class="marquee-sep"></span> Miel de printemps · 8 pots</div>
+    <div class="marquee-item"><span class="marquee-sep"></span> Atelier confiture · vendredi</div>
+    <div class="marquee-item"><span class="marquee-sep"></span> Fromages de chèvre · jeudi</div>
+    <div class="marquee-item"><span class="marquee-sep"></span> Concert jazz · parc · 20h</div>
+  </div>
+</div>
+
+<!-- FONCTIONNALITÉS -->
+<section id="fonctionnalites">
+  <div class="section-label">
+    <span class="section-label-num">01</span>
+    <span class="section-label-txt">Fonctionnalités</span>
+  </div>
+  <div class="features-grid">
+    <div class="feature-cell">
+      <div class="feature-num">01</div>
+      <div class="feature-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2C7 2 3 5 3 9C3 14 10 19 10 19C10 19 17 14 17 9C17 5 13 2 10 2Z" stroke="#0E0E0E" stroke-width="2"/><circle cx="10" cy="9" r="2.5" fill="#0E0E0E"/></svg>
+      </div>
+      <h3 class="feature-title">Carte interactive autour de moi</h3>
+      <p class="feature-desc">Visualisez en temps réel les producteurs et événements dans un rayon personnalisable. Filtrez par catégorie, distance, disponibilité.</p>
+    </div>
+    <div class="feature-cell">
+      <div class="feature-num">02</div>
+      <div class="feature-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2C7 2 5 4 5 7v4l-2 3h14l-2-3V7C15 4 13 2 10 2z" stroke="#0E0E0E" stroke-width="2" stroke-linejoin="round"/><path d="M8 16c0 1.1.9 2 2 2s2-.9 2-2" stroke="#0E0E0E" stroke-width="2"/></svg>
+      </div>
+      <h3 class="feature-title">Alertes en temps réel</h3>
+      <p class="feature-desc">Abonnez-vous à vos producteurs préférés. Recevez une notification dès qu'un stock est disponible, un panier ouvert ou un événement ajouté.</p>
+    </div>
+    <div class="feature-cell">
+      <div class="feature-num">03</div>
+      <div class="feature-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="7" height="7" stroke="#0E0E0E" stroke-width="2"/><rect x="11" y="2" width="7" height="7" stroke="#0E0E0E" stroke-width="2"/><rect x="2" y="11" width="7" height="7" stroke="#0E0E0E" stroke-width="2"/><rect x="11" y="11" width="7" height="7" stroke="#0E0E0E" stroke-width="2"/></svg>
+      </div>
+      <h3 class="feature-title">Feed local unifié</h3>
+      <p class="feature-desc">Un seul fil d'actualité pour tout : disponibilités producteurs, paniers de la semaine, événements du village, marchés et fêtes locales.</p>
+    </div>
+    <div class="feature-cell">
+      <div class="feature-num">04</div>
+      <div class="feature-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="14" stroke="#0E0E0E" stroke-width="2" stroke-linejoin="square"/><rect x="11" y="7" width="6" height="10" stroke="#0E0E0E" stroke-width="2" stroke-linejoin="square"/></svg>
+      </div>
+      <h3 class="feature-title">Publication en 60 secondes</h3>
+      <p class="feature-desc">Producteur ou organisateur, publiez en quelques secondes. Titre, quantité, lieu, date — vos abonnés sont notifiés instantanément.</p>
+    </div>
+    <div class="feature-cell">
+      <div class="feature-num">05</div>
+      <div class="feature-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 4 L10 2 L17 4 L17 18 L3 18 Z" stroke="#0E0E0E" stroke-width="2" stroke-linejoin="square"/><path d="M7 18 L7 12 L13 12 L13 18" stroke="#0E0E0E" stroke-width="2" stroke-linejoin="square"/></svg>
+      </div>
+      <h3 class="feature-title">Page commune intégrée</h3>
+      <p class="feature-desc">Chaque commune a sa page publique. Les mairies peuvent administrer directement et intégrer un widget sur leur site officiel.</p>
+    </div>
+    <div class="feature-cell">
+      <div class="feature-num">06</div>
+      <div class="feature-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 10 C5 7 7 5 10 5C13 5 15 7 15 10M3 14 L10 10 L17 14" stroke="#0E0E0E" stroke-width="2" stroke-linecap="square"/></svg>
+      </div>
+      <h3 class="feature-title">Partage en un clic</h3>
+      <p class="feature-desc">Chaque événement ou dispo génère un lien partageable et une image prête pour les réseaux sociaux. Diffusez sans effort.</p>
+    </div>
+  </div>
+</section>
+
+<!-- POUR QUI -->
+<section id="qui">
+  <div class="section-label">
+    <span class="section-label-num">02</span>
+    <span class="section-label-txt">Pour qui</span>
+  </div>
+  <div class="who-grid">
+    <div class="who-col">
+      <div class="who-header">
+        <div class="who-badge dark">Producteurs</div>
+        <div class="who-title">De 6 poules à 10 employés</div>
+      </div>
+      <div class="who-list">
+        <div class="who-item">
+          <div class="who-item-arrow">→</div>
+          <div class="who-item-text"><strong>Éleveuses, maraîchers, apiculteurs</strong> — publiez vos disponibilités en 30 secondes. Vos voisins vous trouvent.</div>
+        </div>
+        <div class="who-item">
+          <div class="who-item-arrow">→</div>
+          <div class="who-item-text"><strong>Artisans et petites PME</strong> — gérez vos paniers hebdomadaires, alertes de stock, listes d'attente. Zéro commission.</div>
+        </div>
+        <div class="who-item">
+          <div class="who-item-arrow">→</div>
+          <div class="who-item-text"><strong>Marchés et points de vente</strong> — annoncez vos horaires, vos produits du jour, vos fermetures exceptionnelles.</div>
+        </div>
+        <div class="who-item">
+          <div class="who-item-arrow">→</div>
+          <div class="who-item-text"><strong>Ateliers et formations</strong> — confiture, pain, fromage — créez un événement et remplissez vos sessions.</div>
+        </div>
+      </div>
+    </div>
+    <div class="who-col">
+      <div class="who-header">
+        <div class="who-badge red">Habitants & mairies</div>
+        <div class="who-title">Toute la vie locale au même endroit</div>
+      </div>
+      <div class="who-list">
+        <div class="who-item">
+          <div class="who-item-arrow">→</div>
+          <div class="who-item-text"><strong>Les habitants</strong> — recevez une alerte quand vos producteurs favoris ont du stock. Ne ratez plus rien de ce qui se passe près de chez vous.</div>
+        </div>
+        <div class="who-item">
+          <div class="who-item-arrow">→</div>
+          <div class="who-item-text"><strong>Les associations</strong> — publiez vos événements, concerts, tournois, ateliers. Touchez toute la commune en un clic.</div>
+        </div>
+        <div class="who-item">
+          <div class="who-item-arrow">→</div>
+          <div class="who-item-text"><strong>Les mairies</strong> — administrez l'agenda officiel de votre commune, intégrez le widget sur votre site, auto-hébergez l'instance.</div>
+        </div>
+        <div class="who-item">
+          <div class="who-item-arrow">→</div>
+          <div class="who-item-text"><strong>N'importe qui</strong> — pas de compte obligatoire pour consulter. Créez un compte pour publier ou s'abonner. C'est tout.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NOTIFICATIONS -->
+<section>
+  <div class="section-label">
+    <span class="section-label-num">03</span>
+    <span class="section-label-txt">Système de notifications</span>
+  </div>
+  <div class="notif-section">
+    <div class="notif-left">
+      <div class="section-eyebrow">Alertes personnalisées</div>
+      <h2 class="section-title">Vous saurez<br>avant tout<br>le monde.</h2>
+      <p class="section-desc">
+        Abonnez-vous à la Ferme Bonnet. Quand Marie-Claire pose ses 2 douzaines d'œufs ce matin, vous recevez une notification avant même qu'elle ait mis son téléphone dans sa poche.
+      </p>
+      <div style="margin-top:36px;display:flex;gap:0;border:var(--border);">
+        <div style="flex:1;padding:20px;border-right:var(--border-thin);text-align:center;">
+          <div style="font-family:'Archivo Black',sans-serif;font-size:1.8rem;color:var(--red);">48</div>
+          <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#999;margin-top:4px;">abonnés moyens</div>
+        </div>
+        <div style="flex:1;padding:20px;border-right:var(--border-thin);text-align:center;">
+          <div style="font-family:'Archivo Black',sans-serif;font-size:1.8rem;color:var(--black);">&lt; 1s</div>
+          <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#999;margin-top:4px;">délai de notification</div>
+        </div>
+        <div style="flex:1;padding:20px;text-align:center;">
+          <div style="font-family:'Archivo Black',sans-serif;font-size:1.8rem;color:var(--black);">0€</div>
+          <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#999;margin-top:4px;">commission prélevée</div>
+        </div>
+      </div>
+    </div>
+    <div class="notif-right">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:#333;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:16px;">Aujourd'hui · 7h42</div>
+
+      <div class="notif-card red">
+        <div class="notif-inner">
+          <div class="notif-title">Oeufs frais — 2 douzaines dispo</div>
+          <div class="notif-sub">Ferme Bonnet · 1.2 km · À la ferme aujourd'hui</div>
+        </div>
+        <div class="notif-t">Il y a 8 min</div>
+      </div>
+      <div class="notif-card green">
+        <div class="notif-inner">
+          <div class="notif-title">Panier légumes semaine 24 ouvert</div>
+          <div class="notif-sub">GAEC Les Coteaux · 12 paniers restants · Retrait vendredi</div>
+        </div>
+        <div class="notif-t">Il y a 1h</div>
+      </div>
+      <div class="notif-card white">
+        <div class="notif-inner">
+          <div class="notif-title">Fête de la Saint-Jean samedi</div>
+          <div class="notif-sub">Place du village · 20h · Entrée libre · 0.6 km</div>
+        </div>
+        <div class="notif-t">Il y a 3h</div>
+      </div>
+      <div class="notif-card red" style="opacity:0.5;">
+        <div class="notif-inner">
+          <div class="notif-title">Miel de printemps — 8 pots restants</div>
+          <div class="notif-sub">Rucher du Moulin · Sur place ou livraison</div>
+        </div>
+        <div class="notif-t">Hier</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OPEN SOURCE -->
+<section id="opensource" style="border:none;">
+  <div class="section-label" style="background:var(--black);border-color:#1a1a1a;">
+    <span class="section-label-num" style="color:var(--red);">04</span>
+    <span class="section-label-txt" style="color:#444;">Open Source</span>
+  </div>
+  <div class="os-section">
+    <div>
+      <h2 class="os-title">Un bien<br>commun<br><span class="r">numérique.</span></h2>
+      <p class="os-desc">LaLoCarte appartient à tout le monde. Le code est public, les données restent chez les producteurs, aucun algorithme caché ne décide de ce que vous voyez.</p>
+      <div class="os-items">
+        <div class="os-item"><span class="os-item-arrow">→</span><span class="os-item-text">100% open source — licence AGPL-3.0</span></div>
+        <div class="os-item"><span class="os-item-arrow">→</span><span class="os-item-text">Auto-hébergeable par n'importe quelle mairie</span></div>
+        <div class="os-item"><span class="os-item-arrow">→</span><span class="os-item-text">Aucune publicité, aucun algorithme de tri</span></div>
+        <div class="os-item"><span class="os-item-arrow">→</span><span class="os-item-text">Données appartenant aux producteurs</span></div>
+        <div class="os-item"><span class="os-item-arrow">→</span><span class="os-item-text">Contributions bienvenues de partout</span></div>
+      </div>
+    </div>
+    <div class="os-right">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:#333;letter-spacing:0.1em;margin-bottom:12px;"># COMMENCER EN LOCAL</div>
+      <div class="code-block">
+        <span class="c-gray"># Cloner le repo</span><br>
+        <span class="c-green">git</span> <span class="c-white">clone</span> <span class="c-yellow">https://github.com/</span><br>
+        <span class="c-yellow">  lalocarte/lalocarte.git</span><br><br>
+        <span class="c-gray"># Installer</span><br>
+        <span class="c-green">npm</span> <span class="c-white">install</span><br><br>
+        <span class="c-gray"># Variables d'environnement</span><br>
+        <span class="c-green">cp</span> <span class="c-white">.env.example .env.local</span><br><br>
+        <span class="c-gray"># Base de données</span><br>
+        <span class="c-green">npm</span> <span class="c-white">run db:migrate</span><br><br>
+        <span class="c-gray"># Lancer</span><br>
+        <span class="c-green">npm</span> <span class="c-white">run dev</span><br><br>
+        <span class="c-gray"># → http://localhost:3000</span>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:0;border:2px solid #1e1e1e;">
+        <div style="flex:1;padding:14px;border-right:1.5px solid #1e1e1e;text-align:center;">
+          <div style="font-family:'Archivo Black',sans-serif;font-size:1.1rem;color:#fff;">Next.js</div>
+          <div style="font-size:8px;font-weight:700;color:#444;letter-spacing:0.08em;text-transform:uppercase;margin-top:3px;">Frontend</div>
+        </div>
+        <div style="flex:1;padding:14px;border-right:1.5px solid #1e1e1e;text-align:center;">
+          <div style="font-family:'Archivo Black',sans-serif;font-size:1.1rem;color:#fff;">PostGIS</div>
+          <div style="font-size:8px;font-weight:700;color:#444;letter-spacing:0.08em;text-transform:uppercase;margin-top:3px;">Géo</div>
+        </div>
+        <div style="flex:1;padding:14px;border-right:1.5px solid #1e1e1e;text-align:center;">
+          <div style="font-family:'Archivo Black',sans-serif;font-size:1.1rem;color:#fff;">Supabase</div>
+          <div style="font-size:8px;font-weight:700;color:#444;letter-spacing:0.08em;text-transform:uppercase;margin-top:3px;">Realtime</div>
+        </div>
+        <div style="flex:1;padding:14px;text-align:center;">
+          <div style="font-family:'Archivo Black',sans-serif;font-size:1.1rem;color:#fff;">MapLibre</div>
+          <div style="font-size:8px;font-weight:700;color:#444;letter-spacing:0.08em;text-transform:uppercase;margin-top:3px;">Carte</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section id="roadmap" style="border-top:var(--border);">
+  <div class="section-label">
+    <span class="section-label-num">05</span>
+    <span class="section-label-txt">Roadmap</span>
+  </div>
+  <div class="roadmap-grid">
+    <div class="roadmap-cell">
+      <div class="roadmap-v active">v0.1</div>
+      <div class="roadmap-tag active">En cours</div>
+      <div class="roadmap-items">
+        <div class="roadmap-item active-item">Design system & identité</div>
+        <div class="roadmap-item active-item">Profil producteur</div>
+        <div class="roadmap-item active-item">Publication disponibilité</div>
+        <div class="roadmap-item">Feed local basique</div>
+        <div class="roadmap-item">Carte avec pins</div>
+      </div>
+    </div>
+    <div class="roadmap-cell">
+      <div class="roadmap-v">v0.2</div>
+      <div class="roadmap-tag">Mois 3</div>
+      <div class="roadmap-items">
+        <div class="roadmap-item">Abonnements producteur</div>
+        <div class="roadmap-item">Notifications Web Push</div>
+        <div class="roadmap-item">Alertes in-app realtime</div>
+        <div class="roadmap-item">Préférences par catégorie</div>
+        <div class="roadmap-item">Rayon personnalisable</div>
+      </div>
+    </div>
+    <div class="roadmap-cell">
+      <div class="roadmap-v">v0.3</div>
+      <div class="roadmap-tag">Mois 4–5</div>
+      <div class="roadmap-items">
+        <div class="roadmap-item">Ajout d'événements</div>
+        <div class="roadmap-item">Modération communautaire</div>
+        <div class="roadmap-item">Agenda par commune</div>
+        <div class="roadmap-item">Partage & image générée</div>
+        <div class="roadmap-item">Widget mairie</div>
+      </div>
+    </div>
+    <div class="roadmap-cell">
+      <div class="roadmap-v">v1.0</div>
+      <div class="roadmap-tag">Mois 6+</div>
+      <div class="roadmap-items">
+        <div class="roadmap-item">App mobile React Native</div>
+        <div class="roadmap-item">Push notifications mobiles</div>
+        <div class="roadmap-item">Mode hors-ligne PWA</div>
+        <div class="roadmap-item">Paniers hebdomadaires</div>
+        <div class="roadmap-item">Auto-hébergement mairie</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="border:none;">
+  <div class="cta-section">
+    <div>
+      <h2 class="cta-title">Rejoignez<br>la communauté.</h2>
+      <p class="cta-sub">Développeur, designer, producteur, élu local — tout le monde peut contribuer. Le code est public, la mission est claire.</p>
+    </div>
+    <div class="cta-actions">
+      <a class="cta-btn-main" href="https://github.com/lalocarte/lalocarte">
+        <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><path d="M10 2C6.7 2 4 4.7 4 8c0 2.7 1.7 4.9 4.2 5.7-.1-.7 0-1.4 0-1.4s-.2 0-.5-.1C6.3 11.9 5.7 10.5 5.6 10c-.1-.4-.4-1.5-1.1-2.1 0 0-.4-.3 0-.3.9.1 1.4 1 1.4 1 .8 1.4 2.1 1 2.6.8.1-.6.3-1 .6-1.2-2-.2-4.1-1-4.1-4.4 0-1 .3-1.8.9-2.4-.1-.2-.4-1.1.1-2.3 0 0 .7-.2 2.4.9.7-.2 1.5-.3 2.2-.3.7 0 1.5.1 2.2.3 1.7-1.1 2.4-.9 2.4-.9.5 1.2.2 2.1.1 2.3.6.6.9 1.4.9 2.4 0 3.4-2.1 4.2-4.1 4.4.3.3.6.8.6 1.6v2.4c0 .2.2.5.6.4C14.3 12.9 16 10.7 16 8c0-3.3-2.7-6-6-6z" fill="#0E0E0E"/></svg>
+        STAR SUR GITHUB
+      </a>
+      <a class="cta-btn-sec" href="#">
+        LIRE LE README →
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-col">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+      <svg width="24" height="30" viewBox="0 0 24 30" fill="none"><path d="M12 2C7 2 3 6 3 11C3 18 12 28 12 28C12 28 21 18 21 11C21 6 17 2 12 2Z" fill="#fff"/><circle cx="12" cy="10.5" r="3.5" fill="#0E0E0E"/><path d="M9.5 13.5Q12 16 14.5 13.5" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <div class="footer-logo">LaLoCarte</div>
+    </div>
+    <p class="footer-tagline">La plateforme vivante du territoire local. Gratuit, open source, communautaire — pour toujours.</p>
+  </div>
+  <div class="footer-col">
+    <div class="footer-label">Projet</div>
+    <div class="footer-links">
+      <a class="footer-link" href="#">Fonctionnalités</a>
+      <a class="footer-link" href="#">Roadmap</a>
+      <a class="footer-link" href="#">Pour les mairies</a>
+      <a class="footer-link" href="#">Contribuer</a>
+    </div>
+  </div>
+  <div class="footer-col">
+    <div class="footer-label">Open Source</div>
+    <div class="footer-links">
+      <a class="footer-link" href="https://github.com/lalocarte/lalocarte">GitHub</a>
+      <a class="footer-link" href="#">Documentation</a>
+      <a class="footer-link" href="#">CONTRIBUTING.md</a>
+      <a class="footer-link" href="#">Licence AGPL-3.0</a>
+    </div>
+  </div>
+  <div class="footer-bottom" style="grid-column:1/-1;">
+    <span class="footer-copy">© 2025 LaLoCarte — Projet communautaire open source</span>
+    <span class="footer-licence">Licence AGPL-3.0 · Fait avec ♥ pour les territoires</span>
+  </div>
+</footer>
+
+<script>
+const cursor = document.getElementById('cursor');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top = e.clientY + 'px';
+});
+document.querySelectorAll('a, button, .feature-cell, .who-item, .feed-item').forEach(el => {
+  el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+  el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+});
+
+// Animate feed items on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.opacity = '1';
+      entry.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.feature-cell, .who-item, .roadmap-cell').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(16px)';
+  el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
